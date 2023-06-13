@@ -24,7 +24,8 @@ export class UserPostController implements Controller {
 			await this.userCreator.run({ id, name, email, password });
 			this.httpResponse.Created(res, "User created");
 		} catch (error) {
-			this.httpResponse.Error(res, "couldn't create a user");
+			console.log(error);
+			this.httpResponse.Error(res, error);
 		}
 	}
 }

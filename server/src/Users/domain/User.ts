@@ -43,6 +43,7 @@ export class User {
 			id: this.id.value,
 			name: this.name.value,
 			email: this.email.value,
+			password: this.password.value,
 			rooms: this.rooms.map((roomId) => roomId.value),
 			messages: this.messages.map((messageId) => messageId.value),
 		};
