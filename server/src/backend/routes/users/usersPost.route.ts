@@ -3,8 +3,8 @@ import { Request, Response, Router } from "express";
 import { sequelize } from "../../../shared/infrastructure/persistence/config/sequelize.config";
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
 import { UserCreator } from "../../../Users/application/UserCreator";
-import { UserPostController } from "../../controllers/users/UserPostController";
 import { SequelizeUserRepository } from "../../../Users/infrastructure/persistences/sequelize/SequelizeUserRepository";
+import { UserPostController } from "../../controllers/users/UserPostController";
 
 export const register = (router: Router): void => {
 	//const reqSchema = [body("name").exists().isString()];
