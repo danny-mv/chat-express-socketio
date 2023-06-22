@@ -1,28 +1,26 @@
 import { Request, Response } from "express";
 
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
-import { UserCreator } from "../../../Users/application/UserCreator";
+import { UserGetter } from "../../../Users/application/UserGetter";
 import { Controller } from "../Controller";
 
-type UserPostRequest = Request & {
+type LoginPostRequest = Request & {
 	body: {
-		id: string;
-		name: string;
 		email: string;
 		password: string;
 	};
 };
-export class RegisterPostController implements Controller {
+export class LoginPostController implements Controller {
 	constructor(
-		private readonly userCreator: UserCreator,
+		private readonly userGetter: UserGetter,
 		private readonly httpResponse: HttpResponse
 	) {}
 
-	async run(req: UserPostRequest, res: Response): Promise<void> {
+	async run(req: LoginPostRequest, res: Response): Promise<void> {
 		try {
-			const { id, name, email, password } = req.body;
-			await this.userCreator.run({ id, name, email, password });
-			this.httpResponse.Created(res, "User created");
+			const { email, password } = req.body;
+			const data = await this.userGetter.run({ email, password });
+			this.httpResponse.Ok(res, data);
 		} catch (error) {
 			console.log(error);
 			this.httpResponse.Error(res, error);

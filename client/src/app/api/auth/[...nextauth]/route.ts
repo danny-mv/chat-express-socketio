@@ -25,7 +25,7 @@ export const authOptions: AuthOptions = {
                 if(!credentials?.email || !credentials?.password){
                     throw new Error("Invalid Credentials")
                 }
-                const authResponse = await fetch("/users/login", {
+                const authResponse = await fetch("http://localhost:8000/login", {
                     method: "POST",
                     headers: {
                     "Content-Type": "application/json",
