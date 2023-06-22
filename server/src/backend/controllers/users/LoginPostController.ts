@@ -12,7 +12,7 @@ type UserPostRequest = Request & {
 		password: string;
 	};
 };
-export class UserPostController implements Controller {
+export class RegisterPostController implements Controller {
 	constructor(
 		private readonly userCreator: UserCreator,
 		private readonly httpResponse: HttpResponse

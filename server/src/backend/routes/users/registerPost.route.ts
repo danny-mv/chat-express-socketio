@@ -4,7 +4,7 @@ import { sequelize } from "../../../shared/infrastructure/persistence/config/seq
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
 import { UserCreator } from "../../../Users/application/UserCreator";
 import { SequelizeUserRepository } from "../../../Users/infrastructure/persistences/sequelize/SequelizeUserRepository";
-import { UserPostController } from "../../controllers/users/UserPostController";
+import { RegisterPostController } from "../../controllers/users/RegisterPostController";
 
 export const register = (router: Router): void => {
 	//const reqSchema = [body("name").exists().isString()];
@@ -12,7 +12,7 @@ export const register = (router: Router): void => {
 	const sequelizeUserRepository = new SequelizeUserRepository(sequelize);
 	const playerCreator = new UserCreator(sequelizeUserRepository);
 	const httpResponse = new HttpResponse();
-	const playersCtrl = new UserPostController(playerCreator, httpResponse);
+	const playersCtrl = new RegisterPostController(playerCreator, httpResponse);
 	router.post(
 		"/register",
 		//checkExact(reqSchema),
