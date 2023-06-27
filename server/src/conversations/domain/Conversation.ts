@@ -7,8 +7,8 @@ export class Conversation {
 	constructor(
 		readonly id: ConversationId,
 		readonly name: ConversationName,
-		readonly users: UserId[],
-		readonly messages: MessageId[]
+		readonly userIds: UserId[],
+		readonly messageIds: MessageId[]
 	) {}
 
 	static fromPrimitives(plainData: {
@@ -29,8 +29,8 @@ export class Conversation {
 		return {
 			id: this.id.value,
 			name: this.name.value,
-			users: this.users.map((userId) => userId.value),
-			messages: this.messages.map((messageId) => messageId.value),
+			users: this.userIds.map((userId) => userId.value),
+			messages: this.messageIds.map((messageId) => messageId.value),
 		};
 	}
 }

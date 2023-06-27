@@ -1,5 +1,6 @@
-import { ModelAttributes, Op } from "sequelize";
+import { ModelAttributes, Op, Sequelize } from "sequelize";
 
+import { SequelizeConversationRepository } from "../../../../conversations/infrastructure/SequelizeConversationRepository";
 import { InvalidArgumentError } from "../../../../shared/domain/value-object/InvalidArgumentError";
 import { SequelizeRepository } from "../../../../shared/infrastructure/persistence/sequelize/SequelizeRepository";
 import { User } from "../../../domain/User";
@@ -8,10 +9,18 @@ import { UserRepository } from "../../../domain/UserRepository";
 import { UserInstance } from "./UserInstance";
 
 export class SequelizeUserRepository extends SequelizeRepository implements UserRepository {
+	constructor(sequelize: Sequelize) {
+		super(sequelize);
+		const UserModel = this.repository();
+		const ConversationModel = new SequelizeConversationRepository(sequelize).repository();
+		UserModel.belongsToMany(ConversationModel, { through: "Users_Conversations" });
+		ConversationModel.belongsToMany(UserModel, { through: "Users_Conversations" });
+	}
+
 	async create(user: User): Promise<void> {
 		await this.sequelize.sync();
 		if (await this.findByEmail(user.email)) {
-			throw new InvalidArgumentError("Player's name already exist");
+			throw new InvalidArgumentError("Email already exist");
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		await this.repository().create(user.toPrimitives());

@@ -16,6 +16,7 @@ export const register = (router: Router): void => {
 	const playersCtrl = new UserListPostController(userList, httpResponse);
 	router.get(
 		"/list",
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		authenticateMiddleware,
 		//checkExact(reqSchema),
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument

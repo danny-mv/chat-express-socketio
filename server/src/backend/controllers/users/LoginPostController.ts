@@ -21,7 +21,9 @@ export class LoginPostController implements Controller {
 		try {
 			const { email, password } = req.body;
 			const data = await this.userGetter.run({ email, password });
-			const accessToken = sign({ email }, process.env.SECRET ?? "", { expiresIn: "1h" });
+			const accessToken = sign({ id: data.id, email }, process.env.SECRET ?? "", {
+				expiresIn: "1h",
+			});
 			const responseData = {
 				...data,
 				accessToken,

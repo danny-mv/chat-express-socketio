@@ -1,7 +1,9 @@
 "use client"
 
+import getSession from "@/app/actions/getSession";
 import Avatar from "@/app/components/Avatar";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
@@ -16,17 +18,19 @@ interface UserBoxProps{
 const UserBox: React.FC<UserBoxProps> = ({data}) => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const session = useSession()
 
     const handleClick = useCallback(() => {
         setIsLoading(true);
-        axios.post("/api/conversations", {
-            userId: data.id
-        })
+        axios.post("http://localhost:8000/conversation", {
+            userId: data.id,
+            name: data.name
+        },{headers:{"Authorization": `Bearer ${session.data?.user.accessToken}`}})
         .then((data)=> {
             router.push(`/conversations/${data.data.id}`)
         })
         .finally(() => setIsLoading(false))
-    }, [data, router])
+    }, [data, router, session])
     return ( 
     <div
         onClick={handleClick}

@@ -7,13 +7,14 @@ import { ConversationCreatorRequest } from "./request/ConversationCreatorRequest
 
 export class ConversationCreator {
 	constructor(private readonly conversationRepository: ConversationRepository) {}
-	async run({ userId, conversationName }: ConversationCreatorRequest): Promise<void> {
-		const room = new Conversation(
+	async run({ userIds, conversationName }: ConversationCreatorRequest): Promise<Conversation> {
+		const conversation = new Conversation(
 			new ConversationId(),
 			new ConversationName(conversationName),
-			new UserId(userId),
+			userIds.map((id) => new UserId(id)),
 			[]
 		);
-		await this.conversationRepository.create(room);
+
+		return await this.conversationRepository.create(conversation);
 	}
 }

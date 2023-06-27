@@ -1,4 +1,4 @@
 export interface ConversationCreatorRequest {
-	userId: string;
+	userIds: string[];
 	conversationName: string;
 }

@@ -4,10 +4,13 @@ import { ConversationCreator } from "../../../conversations/application/Conversa
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
 import { Controller } from "../Controller";
 
-type ConversationPostRequest = Request & {
+interface AuthenticatedRequest extends Request {
+	user?: { id: string };
+}
+type ConversationPostRequest = AuthenticatedRequest & {
 	body: {
 		userId: string;
-		roomName: string;
+		name: string;
 	};
 };
 
@@ -19,8 +22,10 @@ export class RoomPostController implements Controller {
 
 	async run(req: ConversationPostRequest, res: Response): Promise<void> {
 		try {
-			const { userId, conversationName } = req.body;
-			const data = await this.conversationCreator.run({ userId, conversationName });
+			const currentUserId = req.user?.id;
+			const { userId, name } = req.body;
+			const userIds = [currentUserId, userId];
+			const data = await this.conversationCreator.run({ userIds, conversationName: name });
 			this.httpResponse.Ok(res, data);
 		} catch (error) {
 			console.log(error);

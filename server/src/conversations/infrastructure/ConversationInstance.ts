@@ -9,8 +9,4 @@ export const ConversationInstance: ModelAttributes = {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	userId: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
 };
