@@ -1,6 +1,7 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import { validationResult } from "express-validator";
 import * as glob from "glob";
+import { JwtPayload, verify } from "jsonwebtoken";
 import * as path from "path";
 
 import { HttpResponse } from "../../shared/infrastructure/response/HttpResponse";
@@ -31,4 +32,30 @@ export function validateReqSchema(req: Request, res: Response, next: Function): 
 	const errors = validationErrors.mapped();
 
 	return new HttpResponse().UnprocessableContent(res, errors);
+}
+interface AuthenticatedRequest extends Request {
+	user?: { email: string }; // Define la propiedad 'user' con el tipo adecuado
+}
+export function authenticateMiddleware(
+	req: AuthenticatedRequest,
+	res: Response,
+	next: NextFunction
+): void {
+	const token = req.headers.authorization?.split(" ")[1];
+
+	if (!token) {
+		new HttpResponse().Unauthorized(res, "There is not any token");
+
+		return;
+	}
+
+	try {
+		const decoded = verify(token, process.env.SECRET ?? "") as JwtPayload & { email: string };
+
+		req.user = { email: decoded.email };
+
+		next();
+	} catch (error) {
+		new HttpResponse().Forbidden(res, "Invalid Token");
+	}
 }

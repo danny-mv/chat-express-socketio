@@ -6,23 +6,30 @@ interface User {
 }
 const getUsers = async ():Promise<User[]> => {
     const session = await getSession();
+    console.log(session);
 
     if(!session?.user?.email){
+        console.log("error");
         return [];
     }
     try {
         const response = await fetch("http://localhost:8000/list", {
-                    method: "POST",
+                    method: "GET",
                     headers: {
-                    "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(session.user.email),
+                    authorization: `Bearer ${session.user.accessToken}`,
+                    }
                     })
-        const {data} = await response.json()
+                    if(!response.ok){
+                        return []
+                    }
+        const jsonResponse = await response.json()
+        console.log(jsonResponse);
+        const data = jsonResponse.data as User[];
         console.log(data);
         return data;
     } catch (error: any) {
-        return []
+        console.log(error);
+        return [];
     }
 }
 

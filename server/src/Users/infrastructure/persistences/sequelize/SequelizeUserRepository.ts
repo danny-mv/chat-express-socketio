@@ -1,4 +1,4 @@
-import { ModelAttributes } from "sequelize";
+import { ModelAttributes, Op } from "sequelize";
 
 import { InvalidArgumentError } from "../../../../shared/domain/value-object/InvalidArgumentError";
 import { SequelizeRepository } from "../../../../shared/infrastructure/persistence/sequelize/SequelizeRepository";
@@ -26,6 +26,25 @@ export class SequelizeUserRepository extends SequelizeRepository implements User
 		const { id, name, email, password } = user.dataValues;
 
 		return User.fromPrimitives({ id, name, email, password, rooms: [], messages: [] });
+	}
+
+	async findAllExceptUser(email: UserEmail): Promise<User[]> {
+		await this.sequelize.sync();
+		const usersFromPersistence = await this.repository().findAll({
+			where: { [Op.not]: [{ email: email.value }] },
+		});
+		const users = usersFromPersistence.map((user) =>
+			User.fromPrimitives({
+				id: user.get("id") as string,
+				name: user.get("name") as string,
+				email: user.get("email") as string,
+				password: user.get("password") as string,
+				rooms: [],
+				messages: [],
+			})
+		);
+
+		return users;
 	}
 
 	protected entityInstance(): ModelAttributes {

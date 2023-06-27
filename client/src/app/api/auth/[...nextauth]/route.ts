@@ -2,7 +2,6 @@ import { AuthOptions } from "next-auth";
 import GoogleProvider from 'next-auth/providers/google';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import axios from "axios";
 import NextAuth from "next-auth/next";
 
 export const authOptions: AuthOptions = {
@@ -35,15 +34,26 @@ export const authOptions: AuthOptions = {
                 if (!authResponse.ok) {
                     return null
                 }
-                const user = await authResponse.json()
-                return user
-            }
-        })
+                const jsonResponse = await authResponse.json()
+                
+                return {...jsonResponse.data,
+                email: credentials.email}
+        }})
     ],
-    debug: process.env.NODE_ENV === "development",
-    session: {
+    callbacks:{
+        async jwt({token,user}){
+            return {...token, ...user}
+        },
+        async session({session, token, user}){
+            session.user = token as any
+            return session
+        }
+    },
+    session:{
         strategy: "jwt"
-    }
+    },
+    debug: process.env.NODE_ENV === "development",
+    secret: process.env.NEXTAUTH_SECRET,
 }
 
 const handler = NextAuth(authOptions);

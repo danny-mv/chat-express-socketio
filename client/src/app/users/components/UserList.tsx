@@ -11,6 +11,7 @@ interface UserListProps{
     items: User[]
 }
 const UserList: React.FC<UserListProps> = ({items}) => {
+    console.log(items);
     return ( 
         <aside
             className="

@@ -1,4 +1,4 @@
-import { RoomId } from "../../Rooms/domain/RoomId";
+import { ConversationId } from "../../conversations/domain/ConversationId";
 import { UserId } from "../../Users/domain/UserId";
 import { MessageContent } from "./MessageContent";
 import { MessageId } from "./MessageId";
@@ -7,7 +7,7 @@ export class Message {
 	constructor(
 		readonly id: MessageId,
 		readonly userId: UserId,
-		readonly roomId: RoomId,
+		readonly roomId: ConversationId,
 		readonly content: MessageContent
 	) {}
 
@@ -20,7 +20,7 @@ export class Message {
 		return new Message(
 			new MessageId(plainData.id),
 			new UserId(plainData.userId),
-			new RoomId(plainData.roomId),
+			new ConversationId(plainData.roomId),
 			new MessageContent(plainData.content)
 		);
 	}

@@ -1,19 +1,19 @@
 import { MessageId } from "../../Messages/domain/MessageId";
-import { RoomId } from "../../Rooms/domain/RoomId";
+import { ConversationId } from "../../conversations/domain/ConversationId";
 import { UserEmail } from "./UserEmail";
 import { UserId } from "./UserId";
 import { UserName } from "./UserName";
 import { UserPassword } from "./UserPassword";
 
 export class User {
-	readonly rooms: RoomId[];
+	readonly rooms: ConversationId[];
 	readonly messages: MessageId[];
 	constructor(
 		readonly id: UserId,
 		readonly name: UserName,
 		readonly email: UserEmail,
 		readonly password: UserPassword,
-		rooms?: RoomId[],
+		rooms?: ConversationId[],
 		messages?: MessageId[]
 	) {
 		this.rooms = rooms ?? [];
@@ -33,7 +33,7 @@ export class User {
 			new UserName(plainData.name),
 			new UserEmail(plainData.email),
 			new UserPassword(plainData.password),
-			plainData.rooms.map((room) => new RoomId(room)),
+			plainData.rooms.map((room) => new ConversationId(room)),
 			plainData.messages.map((message) => new MessageId(message))
 		);
 	}

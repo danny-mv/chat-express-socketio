@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { sign } from "jsonwebtoken";
 
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
 import { UserGetter } from "../../../Users/application/UserGetter";
@@ -20,7 +21,12 @@ export class LoginPostController implements Controller {
 		try {
 			const { email, password } = req.body;
 			const data = await this.userGetter.run({ email, password });
-			this.httpResponse.Ok(res, data);
+			const accessToken = sign({ email }, process.env.SECRET ?? "", { expiresIn: "1h" });
+			const responseData = {
+				...data,
+				accessToken,
+			};
+			this.httpResponse.Ok(res, responseData);
 		} catch (error) {
 			console.log(error);
 			this.httpResponse.Error(res, error);

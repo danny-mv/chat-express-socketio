@@ -1,26 +1,26 @@
 import { MessageId } from "../../Messages/domain/MessageId";
 import { UserId } from "../../Users/domain/UserId";
-import { RoomId } from "./RoomId";
-import { RoomName } from "./RoomName";
+import { ConversationId } from "./ConversationId";
+import { ConversationName } from "./ConversationName";
 
-export class Room {
+export class Conversation {
 	constructor(
-		readonly id: RoomId,
-		readonly name: RoomName,
-		readonly userId: UserId,
+		readonly id: ConversationId,
+		readonly name: ConversationName,
+		readonly users: UserId[],
 		readonly messages: MessageId[]
 	) {}
 
 	static fromPrimitives(plainData: {
 		id: string;
 		name: string;
-		userId: string;
+		users: string[];
 		messages: string[];
-	}): Room {
-		return new Room(
-			new RoomId(plainData.id),
-			new RoomName(plainData.name),
-			new UserId(plainData.userId),
+	}): Conversation {
+		return new Conversation(
+			new ConversationId(plainData.id),
+			new ConversationName(plainData.name),
+			plainData.users.map((user) => new UserId(user)),
 			plainData.messages.map((message) => new MessageId(message))
 		);
 	}
@@ -29,7 +29,7 @@ export class Room {
 		return {
 			id: this.id.value,
 			name: this.name.value,
-			userId: this.userId.value,
+			users: this.users.map((userId) => userId.value),
 			messages: this.messages.map((messageId) => messageId.value),
 		};
 	}
