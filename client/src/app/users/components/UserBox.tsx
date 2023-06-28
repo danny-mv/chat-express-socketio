@@ -27,7 +27,8 @@ const UserBox: React.FC<UserBoxProps> = ({data}) => {
             name: data.name
         },{headers:{"Authorization": `Bearer ${session.data?.user.accessToken}`}})
         .then((data)=> {
-            router.push(`/conversations/${data.data.id}`)
+            console.log(data);
+            router.push(`/conversations/${data.data.data.id}`)
         })
         .finally(() => setIsLoading(false))
     }, [data, router, session])

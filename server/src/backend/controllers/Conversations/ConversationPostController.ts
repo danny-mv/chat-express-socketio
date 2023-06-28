@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 
-import { ConversationCreator } from "../../../conversations/application/ConversationCreator";
+import { ConversationCreator } from "../../../Conversations/application/ConversationCreator";
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
 import { Controller } from "../Controller";
 
 interface AuthenticatedRequest extends Request {
-	user?: { id: string };
+	user?: { id: string; email: string };
 }
 type ConversationPostRequest = AuthenticatedRequest & {
 	body: {
@@ -14,7 +14,7 @@ type ConversationPostRequest = AuthenticatedRequest & {
 	};
 };
 
-export class RoomPostController implements Controller {
+export class ConversationPostController implements Controller {
 	constructor(
 		private readonly conversationCreator: ConversationCreator,
 		private readonly httpResponse: HttpResponse
@@ -26,6 +26,7 @@ export class RoomPostController implements Controller {
 			const { userId, name } = req.body;
 			const userIds = [currentUserId, userId];
 			const data = await this.conversationCreator.run({ userIds, conversationName: name });
+			console.log(data);
 			this.httpResponse.Ok(res, data);
 		} catch (error) {
 			console.log(error);

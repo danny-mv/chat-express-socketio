@@ -1,23 +1,23 @@
+import { ConversationId } from "../../Conversations/domain/ConversationId";
 import { MessageId } from "../../Messages/domain/MessageId";
-import { ConversationId } from "../../conversations/domain/ConversationId";
 import { UserEmail } from "./UserEmail";
 import { UserId } from "./UserId";
 import { UserName } from "./UserName";
 import { UserPassword } from "./UserPassword";
 
 export class User {
-	readonly rooms: ConversationId[];
-	readonly messages: MessageId[];
+	readonly conversationIds: ConversationId[];
+	readonly messageIds: MessageId[];
 	constructor(
 		readonly id: UserId,
 		readonly name: UserName,
 		readonly email: UserEmail,
 		readonly password: UserPassword,
-		rooms?: ConversationId[],
-		messages?: MessageId[]
+		conversationIds?: ConversationId[],
+		messageIds?: MessageId[]
 	) {
-		this.rooms = rooms ?? [];
-		this.messages = messages ?? [];
+		this.conversationIds = conversationIds ?? [];
+		this.messageIds = messageIds ?? [];
 	}
 
 	static fromPrimitives(plainData: {
@@ -25,16 +25,16 @@ export class User {
 		name: string;
 		email: string;
 		password: string;
-		rooms: string[];
-		messages: string[];
+		conversationIds: string[];
+		messageIds: string[];
 	}): User {
 		return new User(
 			new UserId(plainData.id),
 			new UserName(plainData.name),
 			new UserEmail(plainData.email),
 			new UserPassword(plainData.password),
-			plainData.rooms.map((room) => new ConversationId(room)),
-			plainData.messages.map((message) => new MessageId(message))
+			plainData.conversationIds.map((conversationId) => new ConversationId(conversationId)),
+			plainData.messageIds.map((messageId) => new MessageId(messageId))
 		);
 	}
 
@@ -44,8 +44,8 @@ export class User {
 			name: this.name.value,
 			email: this.email.value,
 			password: this.password.value,
-			rooms: this.rooms.map((roomId) => roomId.value),
-			messages: this.messages.map((messageId) => messageId.value),
+			conversationIds: this.conversationIds.map((conversationId) => conversationId.value),
+			messageIds: this.messageIds.map((messageId) => messageId.value),
 		};
 	}
 }

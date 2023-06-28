@@ -34,7 +34,7 @@ export function validateReqSchema(req: Request, res: Response, next: Function): 
 	return new HttpResponse().UnprocessableContent(res, errors);
 }
 interface AuthenticatedRequest extends Request {
-	user?: { email: string }; // Define la propiedad 'user' con el tipo adecuado
+	user?: { id: string; email: string };
 }
 export function authenticateMiddleware(
 	req: AuthenticatedRequest,
@@ -52,7 +52,7 @@ export function authenticateMiddleware(
 	try {
 		const decoded = verify(token, process.env.SECRET ?? "") as JwtPayload & { email: string };
 
-		req.user = { email: decoded.email };
+		req.user = { id: decoded.id, email: decoded.email };
 
 		next();
 	} catch (error) {

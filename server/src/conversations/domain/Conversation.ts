@@ -14,14 +14,14 @@ export class Conversation {
 	static fromPrimitives(plainData: {
 		id: string;
 		name: string;
-		users: string[];
-		messages: string[];
+		userIds: string[];
+		messageIds: string[];
 	}): Conversation {
 		return new Conversation(
 			new ConversationId(plainData.id),
 			new ConversationName(plainData.name),
-			plainData.users.map((user) => new UserId(user)),
-			plainData.messages.map((message) => new MessageId(message))
+			plainData.userIds.map((user) => new UserId(user)),
+			plainData.messageIds.map((message) => new MessageId(message))
 		);
 	}
 
@@ -29,8 +29,8 @@ export class Conversation {
 		return {
 			id: this.id.value,
 			name: this.name.value,
-			users: this.userIds.map((userId) => userId.value),
-			messages: this.messageIds.map((messageId) => messageId.value),
+			userIds: this.userIds.map((userId) => userId.value),
+			messageIds: this.messageIds.map((messageId) => messageId.value),
 		};
 	}
 }

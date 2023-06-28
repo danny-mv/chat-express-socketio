@@ -1,6 +1,5 @@
-import { ModelAttributes, Op, Sequelize } from "sequelize";
+import { ModelAttributes, Op } from "sequelize";
 
-import { SequelizeConversationRepository } from "../../../../conversations/infrastructure/SequelizeConversationRepository";
 import { InvalidArgumentError } from "../../../../shared/domain/value-object/InvalidArgumentError";
 import { SequelizeRepository } from "../../../../shared/infrastructure/persistence/sequelize/SequelizeRepository";
 import { User } from "../../../domain/User";
@@ -9,14 +8,6 @@ import { UserRepository } from "../../../domain/UserRepository";
 import { UserInstance } from "./UserInstance";
 
 export class SequelizeUserRepository extends SequelizeRepository implements UserRepository {
-	constructor(sequelize: Sequelize) {
-		super(sequelize);
-		const UserModel = this.repository();
-		const ConversationModel = new SequelizeConversationRepository(sequelize).repository();
-		UserModel.belongsToMany(ConversationModel, { through: "Users_Conversations" });
-		ConversationModel.belongsToMany(UserModel, { through: "Users_Conversations" });
-	}
-
 	async create(user: User): Promise<void> {
 		await this.sequelize.sync();
 		if (await this.findByEmail(user.email)) {
@@ -34,7 +25,7 @@ export class SequelizeUserRepository extends SequelizeRepository implements User
 		}
 		const { id, name, email, password } = user.dataValues;
 
-		return User.fromPrimitives({ id, name, email, password, rooms: [], messages: [] });
+		return User.fromPrimitives({ id, name, email, password, conversationIds: [], messageIds: [] });
 	}
 
 	async findAllExceptUser(email: UserEmail): Promise<User[]> {
@@ -48,8 +39,8 @@ export class SequelizeUserRepository extends SequelizeRepository implements User
 				name: user.get("name") as string,
 				email: user.get("email") as string,
 				password: user.get("password") as string,
-				rooms: [],
-				messages: [],
+				conversationIds: [],
+				messageIds: [],
 			})
 		);
 
