@@ -1,27 +1,27 @@
 import { Request, Response, Router } from "express";
 
+import { ConversationByUserIdFinder } from "../../../Conversations/application/ConversationByUserIdFinder";
+import { SequelizeConversationRepository } from "../../../Conversations/infrastructure/SequelizeConversationRepository";
 import { sequelize } from "../../../shared/infrastructure/persistence/config/sequelize.config";
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
-import { UserList } from "../../../Users/application/UserList";
-import { SequelizeUserRepository } from "../../../Users/infrastructure/persistences/sequelize/SequelizeUserRepository";
-import { UserListPostController } from "../../controllers/users/UserListPostController";
+import { ConversationsGetController } from "../../controllers/conversations/ConversationsGetController";
 import { authenticateMiddleware } from "..";
 
 export const register = (router: Router): void => {
 	//const reqSchema = [body("name").exists().isString()];
 
-	const sequelizeUserRepository = new SequelizeUserRepository(sequelize);
-	const userList = new UserList(sequelizeUserRepository);
+	const sequelizeConversationRepository = new SequelizeConversationRepository(sequelize);
+	const useCase = new ConversationByUserIdFinder(sequelizeConversationRepository);
 	const httpResponse = new HttpResponse();
-	const playersCtrl = new UserListPostController(userList, httpResponse);
+	const conversationsCtrl = new ConversationsGetController(useCase, httpResponse);
 	router.get(
-		"/list",
+		"/conversations",
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		authenticateMiddleware,
 		//checkExact(reqSchema),
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		//validateReqSchema,
 		// eslint-disable-next-line @typescript-eslint/no-misused-promises
-		async (req: Request, res: Response) => await playersCtrl.run(req, res)
+		async (req: Request, res: Response) => await conversationsCtrl.run(req, res)
 	);
 };

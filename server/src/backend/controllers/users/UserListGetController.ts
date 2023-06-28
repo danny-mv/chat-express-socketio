@@ -7,7 +7,7 @@ import { Controller } from "../Controller";
 interface AuthenticatedRequest extends Request {
 	user?: { email: string };
 }
-export class UserListPostController implements Controller {
+export class UserListGetController implements Controller {
 	constructor(private readonly userList: UserList, private readonly httpResponse: HttpResponse) {}
 
 	async run(req: AuthenticatedRequest, res: Response): Promise<void> {

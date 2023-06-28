@@ -8,7 +8,13 @@ import { ConversationRepository } from "../domain/ConversationRepository";
 import { ConversationInstance } from "./ConversationInstance";
 
 interface ConversationModel extends Model {
-	addUsers: (users: Model[]) => Promise<void>;
+	dataValues: {
+		id: string;
+		name: string;
+		// cualquier otra propiedad que necesites
+	};
+
+	addUsers: (users: string[]) => Promise<void>;
 }
 export class SequelizeConversationRepository
 	extends SequelizeRepository
@@ -36,25 +42,36 @@ export class SequelizeConversationRepository
 		const users = await this.userModel.findAll({
 			where: { id: conversation.userIds.map((userId) => userId.value) },
 		});
+		const userIds = conversation.userIds.map((userId) => userId.value);
 		console.log(users);
-		await createdConversation.addUsers(users);
+		try {
+			await createdConversation.addUsers(userIds);
+		} catch (error) {
+			console.log(error);
+		}
 
 		return conversation;
 	}
 
 	async findConversationsByUserId(userId: UserId): Promise<Conversation[]> {
 		await this.sequelize.sync();
-		const userConversations = await this.repository().findAll({
+		const userConversations = (await this.repository().findAll({
 			include: [
 				{
 					model: this.userModel,
 					where: { id: userId.value },
 				},
 			],
-		});
-		console.log(userConversations);
+		})) as unknown as ConversationModel[];
+		console.log({ userConversations });
 
-		return [];
+		return userConversations.map((conversationData) => {
+			const { id, name } = conversationData.dataValues;
+			const userIds: string[] = [];
+			const messageIds: string[] = [];
+
+			return Conversation.fromPrimitives({ id, name, userIds, messageIds });
+		});
 	}
 
 	protected entityInstance(): ModelAttributes {

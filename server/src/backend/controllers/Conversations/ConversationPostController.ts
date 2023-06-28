@@ -27,7 +27,7 @@ export class ConversationPostController implements Controller {
 			const userIds = [currentUserId, userId];
 			const data = await this.conversationCreator.run({ userIds, conversationName: name });
 			console.log(data);
-			this.httpResponse.Ok(res, data);
+			this.httpResponse.Created(res, data);
 		} catch (error) {
 			console.log(error);
 			this.httpResponse.Error(res, error);
