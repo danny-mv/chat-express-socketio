@@ -6,7 +6,7 @@ interface ConversationResponse {
 }
 
 export class ConversationsResponse {
-	private readonly conversations: Array<ConversationResponse>;
+	private readonly conversations: any;
 	constructor(conversations: Array<Conversation>) {
 		this.conversations = conversations.map((conversation) => conversation.toPrimitives());
 	}

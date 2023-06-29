@@ -68,12 +68,43 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
                 rounded-lg
                 transition
                 cursor-pointer
+                p-3
             `,
             selected ? "bg-neutral-100" : "bg-white"
             )}
         >
             <Avatar user={otherUser}/>
-            ConvesationBox!
+            <div className="min-w-0 flex-1">
+                <div className="focus:outline-none">
+                    <div 
+                        className="
+                            flex
+                            justify-between
+                            items-center
+                            mb-1
+                        "
+                    >
+                        <p
+                            className="
+                                text-md
+                                font-medium
+                                text-gray-900
+                            ">
+                            {otherUser.name}
+                        </p>
+                        {/* lastmessage?.createdAt */}
+                    </div>
+                    <p 
+                        className={clsx(`
+                            truncate
+                            text-sm
+                        `/* hasSeen */
+                        )}
+                    >
+                        {lastMessageText}
+                    </p>
+                </div>
+            </div>
         </div>
      );
 }

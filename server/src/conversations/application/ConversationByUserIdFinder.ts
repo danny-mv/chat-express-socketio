@@ -8,7 +8,10 @@ export class ConversationByUserIdFinder {
 		const conversationPersistence = await this.conversationRepository.findConversationsByUserId(
 			new UserId(userId)
 		);
+		console.log(JSON.stringify(conversationPersistence), "conversationPersistence");
+		const response = new ConversationsResponse(conversationPersistence);
+		console.log(JSON.stringify(response), "RESPONSE");
 
-		return new ConversationsResponse(conversationPersistence);
+		return response;
 	}
 }

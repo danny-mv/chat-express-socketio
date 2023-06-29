@@ -7,23 +7,23 @@ export class Message {
 	constructor(
 		readonly id: MessageId,
 		readonly body: MessageBody,
-		readonly senderId: UserId,
-		readonly conversationId: ConversationId,
+		readonly UserId: UserId,
+		readonly ConversationId: ConversationId,
 		readonly seenIds: UserId[]
 	) {}
 
 	static fromPrimitives(plainData: {
 		id: string;
 		body: string;
-		userId: string;
-		conversationId: string;
+		UserId: string;
+		ConversationId: string;
 		seenIds: string[];
 	}): Message {
 		return new Message(
 			new MessageId(plainData.id),
 			new MessageBody(plainData.body),
-			new UserId(plainData.userId),
-			new ConversationId(plainData.conversationId),
+			new UserId(plainData.UserId),
+			new ConversationId(plainData.ConversationId),
 			plainData.seenIds.map((userId) => new UserId(userId))
 		);
 	}
@@ -31,9 +31,10 @@ export class Message {
 	toPrimitives(): any {
 		return {
 			id: this.id.value,
-			userId: this.senderId.value,
-			roomId: this.conversationId.value,
-			content: this.body.value,
+			body: this.body.value,
+			UserId: this.UserId.value,
+			ConversationId: this.ConversationId.value,
+			seenIds: [],
 		};
 	}
 }

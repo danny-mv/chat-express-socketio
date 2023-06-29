@@ -1,16 +1,24 @@
 import getCurrentUser from "./getCurrentUser";
 import getSession from "./getSession";
+interface User{
+    id: string; 
+    name: string; 
+    email: string; 
+    password: string
+}
+export interface Message{
+    id: string;
+    body: string;
+    UserId: string;
+    user?: User;
+    ConversationId: string;
+    seenIds: string[];
+}
 export interface Conversation {
     id: string;
     name: string;
-    users: { id: string; name: string; email: string; password: string }[];
-		messages: {
-			id: string;
-			body: string;
-			userId: string;
-			conversationId: string;
-			seenIds: string[];
-		}[]   
+    users: User[];
+	messages: Message[]
 }
 const getConversations = async ():Promise<Conversation[]> => {
     const session = await getSession();
@@ -31,9 +39,18 @@ const getConversations = async ():Promise<Conversation[]> => {
                     }
         const jsonResponse = await response.json()
         const data = jsonResponse.data.conversations as Conversation[];
-        console.log(data);
+        
+        const transformedData = data.map(conversation => ({
+            ...conversation,
+            messages: conversation.messages.map(message => ({
+                ...message,
+                user: conversation.users.find(user => user.id === message.UserId),
+            })),
+        }));
 
-        return data;
+        console.log(transformedData);
+
+        return transformedData;
     } catch (error:any) {
         return []        
     }

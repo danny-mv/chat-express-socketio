@@ -60,7 +60,7 @@ export class SequelizeConversationRepository
 		// Ahora, obtenemos todas las conversaciones que coinciden con las IDs obtenidas anteriormente
 		const userConversations = await this.models[0].findAll({
 			where: {
-				id: userConversationsIds.map((conversation) => conversation.id),
+				id: userConversationsIds.map((conversation) => conversation.dataValues.id),
 			},
 			include: [
 				{
@@ -75,6 +75,7 @@ export class SequelizeConversationRepository
 			],
 		});
 		console.log(userConversations.map((cn) => cn.dataValues));
+		console.log(JSON.stringify(userConversations.map((cn) => cn.dataValues)));
 
 		return userConversations.map((conversationData) => {
 			const { id, name, Users, Messages } = conversationData.dataValues;

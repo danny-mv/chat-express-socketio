@@ -18,9 +18,8 @@ export class Conversation {
 		messages: {
 			id: string;
 			body: string;
-			userId: string;
-			conversationId: string;
-			seenIds: string[];
+			UserId: string;
+			ConversationId: string;
 		}[];
 	}): Conversation {
 		return new Conversation(
@@ -36,7 +35,15 @@ export class Conversation {
 					messageIds: [],
 				})
 			),
-			plainData.messages.map((message) => Message.fromPrimitives(message))
+			plainData.messages.map((message) =>
+				Message.fromPrimitives({
+					id: message.id,
+					body: message.body,
+					UserId: message.UserId,
+					ConversationId: plainData.id,
+					seenIds: [],
+				})
+			)
 		);
 	}
 
