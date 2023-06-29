@@ -1,17 +1,14 @@
-import { Model, ModelAttributes, Sequelize } from "sequelize";
+import { Model } from "sequelize";
 
 import { SequelizeRepository } from "../../shared/infrastructure/persistence/sequelize/SequelizeRepository";
 import { UserId } from "../../Users/domain/UserId";
-import { SequelizeUserRepository } from "../../Users/infrastructure/persistences/sequelize/SequelizeUserRepository";
 import { Conversation } from "../domain/Conversation";
 import { ConversationRepository } from "../domain/ConversationRepository";
-import { ConversationInstance } from "./ConversationInstance";
 
 interface ConversationModel extends Model {
 	dataValues: {
 		id: string;
 		name: string;
-		// cualquier otra propiedad que necesites
 	};
 
 	addUsers: (users: string[]) => Promise<void>;
@@ -20,30 +17,22 @@ export class SequelizeConversationRepository
 	extends SequelizeRepository
 	implements ConversationRepository
 {
-	private readonly userModel;
-	constructor(sequelize: Sequelize) {
-		super(sequelize);
-		const conversationModel = this.repository();
-		this.userModel = new SequelizeUserRepository(sequelize).repository();
-		this.userModel.belongsToMany(conversationModel, { through: "Users_Conversations" });
-		conversationModel.belongsToMany(this.userModel, { through: "Users_Conversations" });
-	}
-
 	async create(conversation: Conversation): Promise<Conversation> {
-		await this.sequelize.sync();
 		/* if (await this.findByEmail(user.email)) {
 			throw new InvalidArgumentError("Player's name already exist");
 		} */
 		//TODO find existing conversations
-		const createdConversation = (await this.repository().create({
+		const createdConversation = (await this.models[0].create({
 			id: conversation.id.value,
 			name: conversation.name.value,
 		})) as ConversationModel;
-		const users = await this.userModel.findAll({
-			where: { id: conversation.userIds.map((userId) => userId.value) },
+		const users = await this.models[1].findAll({
+			where: { id: conversation.users.map((user) => user.id.value) },
 		});
-		const userIds = conversation.userIds.map((userId) => userId.value);
-		console.log(users);
+		if (users.length < 2 || users.length === 0) {
+			throw new Error("Invalid users length");
+		}
+		const userIds = conversation.users.map((user) => user.id.value);
 		try {
 			await createdConversation.addUsers(userIds);
 		} catch (error) {
@@ -54,31 +43,43 @@ export class SequelizeConversationRepository
 	}
 
 	async findConversationsByUserId(userId: UserId): Promise<Conversation[]> {
-		await this.sequelize.sync();
-		const userConversations = (await this.repository().findAll({
+		const userConversationsIds = await this.models[0].findAll({
+			where: {
+				"$users.id$": userId.value,
+			},
 			include: [
 				{
-					model: this.userModel,
-					where: { id: userId.value },
+					model: this.models[1],
+					through: { attributes: [] },
+					attributes: [],
 				},
 			],
-		})) as unknown as ConversationModel[];
-		console.log({ userConversations });
+			attributes: ["id"],
+		});
+
+		// Ahora, obtenemos todas las conversaciones que coinciden con las IDs obtenidas anteriormente
+		const userConversations = await this.models[0].findAll({
+			where: {
+				id: userConversationsIds.map((conversation) => conversation.id),
+			},
+			include: [
+				{
+					model: this.models[1],
+					through: { attributes: [] },
+					attributes: { exclude: ["password"] },
+				},
+				{
+					model: this.models[2],
+					// Aquí puedes excluir campos de los mensajes si lo necesitas
+				},
+			],
+		});
+		console.log(userConversations.map((cn) => cn.dataValues));
 
 		return userConversations.map((conversationData) => {
-			const { id, name } = conversationData.dataValues;
-			const userIds: string[] = [];
-			const messageIds: string[] = [];
+			const { id, name, Users, Messages } = conversationData.dataValues;
 
-			return Conversation.fromPrimitives({ id, name, userIds, messageIds });
+			return Conversation.fromPrimitives({ id, name, users: Users, messages: Messages });
 		});
-	}
-
-	protected entityInstance(): ModelAttributes {
-		return ConversationInstance;
-	}
-
-	protected instanceName(): string {
-		return "conversations";
 	}
 }

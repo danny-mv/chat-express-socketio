@@ -1,5 +1,5 @@
-import { MessageId } from "../../Messages/domain/MessageId";
-import { UserId } from "../../Users/domain/UserId";
+import { Message } from "../../Messages/domain/Message";
+import { User } from "../../Users/domain/User";
 import { ConversationId } from "./ConversationId";
 import { ConversationName } from "./ConversationName";
 
@@ -7,21 +7,36 @@ export class Conversation {
 	constructor(
 		readonly id: ConversationId,
 		readonly name: ConversationName,
-		readonly userIds: UserId[],
-		readonly messageIds: MessageId[]
+		readonly users: User[],
+		readonly messages: Message[]
 	) {}
 
 	static fromPrimitives(plainData: {
 		id: string;
 		name: string;
-		userIds: string[];
-		messageIds: string[];
+		users: { id: string; name: string; email: string; password: string }[];
+		messages: {
+			id: string;
+			body: string;
+			userId: string;
+			conversationId: string;
+			seenIds: string[];
+		}[];
 	}): Conversation {
 		return new Conversation(
 			new ConversationId(plainData.id),
 			new ConversationName(plainData.name),
-			plainData.userIds.map((user) => new UserId(user)),
-			plainData.messageIds.map((message) => new MessageId(message))
+			plainData.users.map((user) =>
+				User.fromPrimitives({
+					id: user.id,
+					name: user.name,
+					email: user.email,
+					password: user.password,
+					conversationIds: [],
+					messageIds: [],
+				})
+			),
+			plainData.messages.map((message) => Message.fromPrimitives(message))
 		);
 	}
 
@@ -29,8 +44,8 @@ export class Conversation {
 		return {
 			id: this.id.value,
 			name: this.name.value,
-			userIds: this.userIds.map((userId) => userId.value),
-			messageIds: this.messageIds.map((messageId) => messageId.value),
+			users: this.users.map((user) => user.toPrimitives()),
+			messages: this.messages.map((message) => message.toPrimitives()),
 		};
 	}
 }

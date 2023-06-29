@@ -3,8 +3,14 @@ import getSession from "./getSession";
 export interface Conversation {
     id: string;
     name: string;
-    userIds: string[];
-    messageIds: string[]    
+    users: { id: string; name: string; email: string; password: string }[];
+		messages: {
+			id: string;
+			body: string;
+			userId: string;
+			conversationId: string;
+			seenIds: string[];
+		}[]   
 }
 const getConversations = async ():Promise<Conversation[]> => {
     const session = await getSession();
@@ -24,7 +30,8 @@ const getConversations = async ():Promise<Conversation[]> => {
                         return []
                     }
         const jsonResponse = await response.json()
-        const data = jsonResponse.data as Conversation[];
+        const data = jsonResponse.data.conversations as Conversation[];
+        console.log(data);
 
         return data;
     } catch (error:any) {

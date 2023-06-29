@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 
-import { sequelize } from "../../../shared/infrastructure/persistence/config/sequelize.config";
+import { User } from "../../../shared/infrastructure/persistence/config/sequelize.config";
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
 import { UserList } from "../../../Users/application/UserList";
 import { SequelizeUserRepository } from "../../../Users/infrastructure/persistences/sequelize/SequelizeUserRepository";
@@ -10,7 +10,7 @@ import { authenticateMiddleware } from "..";
 export const register = (router: Router): void => {
 	//const reqSchema = [body("name").exists().isString()];
 
-	const sequelizeUserRepository = new SequelizeUserRepository(sequelize);
+	const sequelizeUserRepository = new SequelizeUserRepository(User);
 	const userList = new UserList(sequelizeUserRepository);
 	const httpResponse = new HttpResponse();
 	const playersCtrl = new UserListGetController(userList, httpResponse);
