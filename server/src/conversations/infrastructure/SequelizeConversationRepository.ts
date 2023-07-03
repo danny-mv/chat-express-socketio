@@ -1,5 +1,6 @@
-import { Model } from "sequelize";
+import { Model, QueryTypes } from "sequelize";
 
+import { sequelize } from "../../shared/infrastructure/persistence/config/sequelize.config";
 import { SequelizeRepository } from "../../shared/infrastructure/persistence/sequelize/SequelizeRepository";
 import { UserId } from "../../Users/domain/UserId";
 import { Conversation } from "../domain/Conversation";
@@ -22,19 +23,12 @@ export class SequelizeConversationRepository
 			throw new Error("There are not users");
 		}
 		const userIds = conversation.users.map((user) => user.id.value);
-		const existingConversation = await this.models[0].findOne({
-			include: [
-				{
-					model: this.models[1],
-					where: { id: userIds },
-					attributes: [],
-				},
-			],
-		});
-		if (existingConversation) {
-			const { id, name } = existingConversation.dataValues;
-
-			return Conversation.fromPrimitives({ id, name });
+		const existingConversation = await this.findConversationsBetweenTwoUsers(
+			conversation.users[0].id,
+			conversation.users[1].id
+		);
+		if (existingConversation.length > 0) {
+			return existingConversation[0];
 		}
 		const createdConversation = (await this.models[0].create({
 			id: conversation.id.value,
@@ -92,5 +86,29 @@ export class SequelizeConversationRepository
 
 			return Conversation.fromPrimitives({ id, name, users: Users, messages: Messages });
 		});
+	}
+
+	async findConversationsBetweenTwoUsers(
+		userId1: UserId,
+		userId2: UserId
+	): Promise<Conversation[]> {
+		const result = await sequelize.query(
+			`
+			SELECT c.*
+			FROM ${this.models[0].tableName} c
+			JOIN users_conversations uc1 ON uc1.conversationId = c.id
+			JOIN users_conversations uc2 ON uc2.conversationId = c.id
+			WHERE uc1.userId = :userId1
+			AND uc2.userId = :userId2
+		`,
+			{
+				replacements: { userId1: userId1.value, userId2: userId2.value },
+				type: QueryTypes.SELECT,
+			}
+		);
+		console.log({ result });
+		const conversations = result as { id: string; name: string }[];
+
+		return conversations.map(({ id, name }) => Conversation.fromPrimitives({ id, name }));
 	}
 }
