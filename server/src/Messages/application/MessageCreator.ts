@@ -5,11 +5,16 @@ import { MessageBody } from "../domain/MessageBody";
 import { MessageId } from "../domain/MessageId";
 import { MessageRepository } from "../domain/MessageRepository";
 import { MessageCreatorRequest } from "./request/MessageCreatorRequest";
+import { MessageCreatorResponse } from "./response/MessageCreatorResponse";
 
 export class MessageCreator {
 	constructor(private readonly messageRepository: MessageRepository) {}
 
-	async run({ body, sender, conversationId }: MessageCreatorRequest): Promise<void> {
+	async run({
+		body,
+		sender,
+		conversationId,
+	}: MessageCreatorRequest): Promise<MessageCreatorResponse> {
 		const message = new Message(
 			new MessageId(),
 			new MessageBody(body),
@@ -17,6 +22,8 @@ export class MessageCreator {
 			new ConversationId(conversationId),
 			[]
 		);
-		await this.messageRepository.create(message);
+		const data = await this.messageRepository.create(message);
+
+		return new MessageCreatorResponse(data);
 	}
 }

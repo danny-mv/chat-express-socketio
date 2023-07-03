@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Server } from "socket.io";
 
 import { MessageCreator } from "../../../Messages/application/MessageCreator";
 import { HttpResponse } from "../../../shared/infrastructure/response/HttpResponse";
@@ -17,7 +18,8 @@ type MessagePostRequest = AuthenticatedRequest & {
 export class MessagesPostController implements Controller {
 	constructor(
 		private readonly messageCreator: MessageCreator,
-		private readonly httpResponse: HttpResponse
+		private readonly httpResponse: HttpResponse,
+		private readonly io: Server
 	) {}
 
 	async run(req: MessagePostRequest, res: Response): Promise<void> {
@@ -26,10 +28,15 @@ export class MessagesPostController implements Controller {
 			if (!currentUserId) {
 				throw new Error("there is no user");
 			}
-			console.log(currentUserId, "id");
 			const { message, conversationId } = req.body;
-			await this.messageCreator.run({ body: message, sender: currentUserId, conversationId });
-			this.httpResponse.Created(res, "data");
+			const data = await this.messageCreator.run({
+				body: message,
+				sender: currentUserId,
+				conversationId,
+			});
+
+			this.io.to(conversationId as string).emit("messages:new", data.getData());
+			this.httpResponse.Created(res, "Message created");
 		} catch (error) {
 			console.log(error);
 			this.httpResponse.Error(res, error);

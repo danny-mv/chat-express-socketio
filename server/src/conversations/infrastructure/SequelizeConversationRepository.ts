@@ -18,10 +18,24 @@ export class SequelizeConversationRepository
 	implements ConversationRepository
 {
 	async create(conversation: Conversation): Promise<Conversation> {
-		/* if (await this.findByEmail(user.email)) {
-			throw new InvalidArgumentError("Player's name already exist");
-		} */
-		//TODO find existing conversations
+		if (!conversation.users) {
+			throw new Error("There are not users");
+		}
+		const userIds = conversation.users.map((user) => user.id.value);
+		const existingConversation = await this.models[0].findOne({
+			include: [
+				{
+					model: this.models[1],
+					where: { id: userIds },
+					attributes: [],
+				},
+			],
+		});
+		if (existingConversation) {
+			const { id, name } = existingConversation.dataValues;
+
+			return Conversation.fromPrimitives({ id, name });
+		}
 		const createdConversation = (await this.models[0].create({
 			id: conversation.id.value,
 			name: conversation.name.value,
@@ -32,7 +46,6 @@ export class SequelizeConversationRepository
 		if (users.length < 2 || users.length === 0) {
 			throw new Error("Invalid users length");
 		}
-		const userIds = conversation.users.map((user) => user.id.value);
 		try {
 			await createdConversation.addUsers(userIds);
 		} catch (error) {
@@ -57,7 +70,6 @@ export class SequelizeConversationRepository
 			attributes: ["id"],
 		});
 
-		// Ahora, obtenemos todas las conversaciones que coinciden con las IDs obtenidas anteriormente
 		const userConversations = await this.models[0].findAll({
 			where: {
 				id: userConversationsIds.map((conversation) => conversation.dataValues.id),
@@ -70,12 +82,10 @@ export class SequelizeConversationRepository
 				},
 				{
 					model: this.models[2],
-					// Aquí puedes excluir campos de los mensajes si lo necesitas
 				},
 			],
+			order: [[this.models[2], "createdAt", "ASC"]],
 		});
-		console.log(userConversations.map((cn) => cn.dataValues));
-		console.log(JSON.stringify(userConversations.map((cn) => cn.dataValues)));
 
 		return userConversations.map((conversationData) => {
 			const { id, name, Users, Messages } = conversationData.dataValues;

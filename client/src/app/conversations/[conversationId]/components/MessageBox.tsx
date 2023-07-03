@@ -5,7 +5,7 @@ import getUsers, { User } from "@/app/actions/getUsers";
 import Avatar from "@/app/components/Avatar";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
-import format from "date-fns/format";
+import { format } from "date-fns";
 
 interface MessageBoxProps {
     data: Message;
@@ -57,7 +57,8 @@ const MessageBox: React.FC<MessageBoxProps> = ({
                         {data.user?.name}
                     </div>
                     <div className="text-xs text-gray-400">
-                        {/* {format(new Data())} TODO createdAt 5:13 */}
+                        {data.createdAt ? format(new Date(data.createdAt), 'p') : ""}
+                        
                     </div>
                 </div>
                 <div className={message}>

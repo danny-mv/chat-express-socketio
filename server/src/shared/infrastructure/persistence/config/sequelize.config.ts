@@ -21,15 +21,18 @@ function defineModels(sequelize: Sequelize) {
 	const Conversation = sequelize.define("Conversation", ConversationInstance, {
 		timestamps: false,
 	});
-	const Message = sequelize.define("Message", MessageInstance, { timestamps: false });
+	const Message = sequelize.define("Message", MessageInstance, {
+		timestamps: true,
+		updatedAt: false,
+	});
 
 	// Retornando los modelos para su uso posterior
 	return { User, Conversation, Message };
 }
 export const { User, Conversation, Message } = defineModels(sequelize);
 function defineRelations() {
-	User.belongsToMany(Conversation, { through: "Users_Conversations" });
-	Conversation.belongsToMany(User, { through: "Users_Conversations" });
+	User.belongsToMany(Conversation, { through: "Users_Conversations", timestamps: false });
+	Conversation.belongsToMany(User, { through: "Users_Conversations", timestamps: false });
 	Message.belongsTo(User);
 	User.hasMany(Message);
 	Message.belongsTo(Conversation);

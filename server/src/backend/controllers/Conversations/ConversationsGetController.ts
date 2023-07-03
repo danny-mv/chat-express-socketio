@@ -21,7 +21,6 @@ export class ConversationsGetController implements Controller {
 				throw new Error("there is no user");
 			}
 			const data = await this.conversationByUserIdFinder.run(currentUserId);
-			console.log(JSON.stringify(data), "controller");
 			this.httpResponse.Ok(res, data);
 		} catch (error) {
 			console.log(error);

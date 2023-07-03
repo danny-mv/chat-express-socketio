@@ -3,22 +3,23 @@ import { validationResult } from "express-validator";
 import * as glob from "glob";
 import { JwtPayload, verify } from "jsonwebtoken";
 import * as path from "path";
+import { Server } from "socket.io";
 
 import { HttpResponse } from "../../shared/infrastructure/response/HttpResponse";
 
-export function registerRoutes(router: Router): void {
+export function registerRoutes(router: Router, io?: Server): void {
 	const normalizedDirname = path.normalize(__dirname).replace(/\\/g, "/");
 	const routes = glob.sync(`${normalizedDirname}/**/*.route.*`);
-	routes.map((route) => register(route, router));
+	routes.map((route) => register(route, router, io));
 }
 
-function register(routePath: string, router: Router) {
+function register(routePath: string, router: Router, io?: Server) {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
 	const routeModule = require(routePath);
 	if (typeof routeModule === "function") {
-		routeModule(router);
+		routeModule(router, io);
 	} else if (routeModule && typeof routeModule.register === "function") {
-		routeModule.register(router);
+		routeModule.register(router, io);
 	} else {
 		console.error(`No register function found in module ${routePath}`);
 	}

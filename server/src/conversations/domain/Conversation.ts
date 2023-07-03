@@ -7,15 +7,15 @@ export class Conversation {
 	constructor(
 		readonly id: ConversationId,
 		readonly name: ConversationName,
-		readonly users: User[],
-		readonly messages: Message[]
+		readonly users?: User[],
+		readonly messages?: Message[]
 	) {}
 
 	static fromPrimitives(plainData: {
 		id: string;
 		name: string;
-		users: { id: string; name: string; email: string; password: string }[];
-		messages: {
+		users?: { id: string; name: string; email: string; password: string }[];
+		messages?: {
 			id: string;
 			body: string;
 			UserId: string;
@@ -25,25 +25,29 @@ export class Conversation {
 		return new Conversation(
 			new ConversationId(plainData.id),
 			new ConversationName(plainData.name),
-			plainData.users.map((user) =>
-				User.fromPrimitives({
-					id: user.id,
-					name: user.name,
-					email: user.email,
-					password: user.password,
-					conversationIds: [],
-					messageIds: [],
-				})
-			),
-			plainData.messages.map((message) =>
-				Message.fromPrimitives({
-					id: message.id,
-					body: message.body,
-					UserId: message.UserId,
-					ConversationId: plainData.id,
-					seenIds: [],
-				})
-			)
+			plainData.users
+				? plainData.users.map((user) =>
+						User.fromPrimitives({
+							id: user.id,
+							name: user.name,
+							email: user.email,
+							password: user.password,
+							conversationIds: [],
+							messageIds: [],
+						})
+				  )
+				: [],
+			plainData.messages
+				? plainData.messages.map((message) =>
+						Message.fromPrimitives({
+							id: message.id,
+							body: message.body,
+							UserId: message.UserId,
+							ConversationId: plainData.id,
+							seenIds: [],
+						})
+				  )
+				: []
 		);
 	}
 
@@ -51,8 +55,8 @@ export class Conversation {
 		return {
 			id: this.id.value,
 			name: this.name.value,
-			users: this.users.map((user) => user.toPrimitives()),
-			messages: this.messages.map((message) => message.toPrimitives()),
+			users: this.users ? this.users.map((user) => user.toPrimitives()) : [],
+			messages: this.messages ? this.messages.map((message) => message.toPrimitives()) : [],
 		};
 	}
 }

@@ -2,8 +2,10 @@
 
 import { Message } from "@/app/actions/getConversations";
 import useConversation from "@/app/hooks/useConversation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageBox from "./MessageBox";
+import { socket } from "@/app/lib/socketio";
+import { find } from "lodash";
 
 interface BodyProps {
     initialMessages: Message[]
@@ -16,6 +18,28 @@ const Body: React.FC<BodyProps> = ({
 
     const { conversationId } = useConversation()
 
+    useEffect(() => {
+        socket.emit("join", conversationId);
+        bottomRef?.current?.scrollIntoView();
+
+        const messageHandler = (message: Message) => {
+            setMessages((current) => {
+                console.log("current",current);
+                if(find(current, {id: message.id})){
+                    return current
+                }
+
+                return [...current, message]
+            });
+            bottomRef?.current?.scrollIntoView();
+        }
+        socket.on('messages:new', messageHandler);
+        return () => {
+            socket.off('messages:new', messageHandler)
+        }
+        }, [conversationId])
+    
+
     return ( 
         <div className="flex-1 overflow-y-auto">
             {messages.map((message, i) => (
@@ -27,7 +51,7 @@ const Body: React.FC<BodyProps> = ({
             ))}
             <div ref={bottomRef} className="pt-24"/>
         </div>
-     );
+    );
 }
- 
+
 export default Body;
