@@ -11,7 +11,7 @@ export interface Message{
     body: string;
     UserId: string;
     user?: User;
-    createdAt: string;
+    createdAt?: string;
     ConversationId: string;
     seenIds: string[];
 }

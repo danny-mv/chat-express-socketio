@@ -27,7 +27,7 @@ export class User {
 			new UserId(plainData.id),
 			new UserName(plainData.name),
 			new UserEmail(plainData.email),
-			new UserPassword(plainData.password),
+			new UserPassword(plainData.password, true),
 			plainData.conversationIds
 				? plainData.conversationIds.map((conversationId) => new ConversationId(conversationId))
 				: [],

@@ -12,7 +12,8 @@ export class UserGetter {
 			throw new Error("Invalid Credentials");
 		}
 		//Falta encriptado de la pass
-		if (user.password.value !== password) {
+		const isValidPassword = await user.password.compare(password);
+		if (!isValidPassword) {
 			throw new Error("Invalid Credentials");
 		}
 

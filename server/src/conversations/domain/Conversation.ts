@@ -20,6 +20,7 @@ export class Conversation {
 			body: string;
 			UserId: string;
 			ConversationId: string;
+			createdAt: string;
 		}[];
 	}): Conversation {
 		return new Conversation(
@@ -44,6 +45,7 @@ export class Conversation {
 							body: message.body,
 							UserId: message.UserId,
 							ConversationId: plainData.id,
+							createdAt: message.createdAt,
 							seenIds: [],
 						})
 				  )
