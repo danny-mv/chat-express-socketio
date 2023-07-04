@@ -23,9 +23,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     }
     
     const isOwn = session?.user?.id === data.UserId;
-    console.log(session?.user.id, "session")
-    console.log(session);
-    console.log(data.UserId, "data");
+    
     //TODO seenList 5:07
 
     const container = clsx(
