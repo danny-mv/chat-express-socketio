@@ -1,10 +1,10 @@
 # 🎲 Realtime Chat API
 ⚡ Welcome to the Realtime Chat API, a web service designed to support a simple yet engaging chat application. This document will guide you through the application features, API functionalities, and the usage.
 
-### 🎯 Application Features
+## 🎯 Application Features
 The Realtime Chat application is built with a real-time communication feature using Socket.IO. It allows users to send and receive messages instantly. The application also supports user authentication and message history.
 
-### 🤖 API Functionalities
+## 🤖 API Functionalities
 In order to use the chat, you must register as a user with a unique email, name, and password. Each user can see a list of all the messages they've sent and received.
 
 The API supports the following operations:
@@ -21,11 +21,11 @@ The API supports the following operations:
 
 The API follows the main design patterns and respects a clean architecture structure. The persistence is achieved through MongoDB database using Sequelize as an ORM.
 
-### 📑 Available Endpoints
+## 📑 Available Endpoints
 Please refer to the /documentation directory to view the full specification of the available endpoints.
 
 
-### 📥 Installation for the Backend
+## 📥 Installation for the Backend
 To get started with the backend of this application, you first need to navigate to the server directory:
 
 ```bash
@@ -36,7 +36,7 @@ Then, install the project dependencies:
 ```bash
 npm install
 ```
-### 🏁 How To Start the Backend
+## 🏁 How To Start the Backend
 To start the server in development mode, run the following script:
 
 ```bash
@@ -44,7 +44,7 @@ npm run dev
 ```
 Then, open http://localhost:8000 to access the server.
 
-### 🚀 Production for the Backend
+## 🚀 Production for the Backend
 To run the server in production mode, first build the TypeScript code into JavaScript by running:
 
 ```bash
@@ -59,7 +59,7 @@ npm start
 ```
 This will start the server and make it available at http://localhost:8000.
 
-### 🏗️ Scripts for the Backend
+## 🏗️ Scripts for the Backend
 This project comes with several predefined scripts in the package.json file:
 <!--
 test: Runs tests unit and acceptance tests.
@@ -79,7 +79,7 @@ test:features: Runs tests using cucumber and supertest.
 
 `start:` Starts the server in production using the compiled files in the dist/ folder.
 
-### 📥 Installation for the Frontend
+## 📥 Installation for the Frontend
 To get started with the frontend of this application, you first need to navigate to the client directory:
 
 ```bash
@@ -90,7 +90,7 @@ Then, install the project dependencies:
 ```bash
 npm install
 ```
-### 🏁 How To Start the Frontend
+## 🏁 How To Start the Frontend
 To start the client in development mode, run the following script:
 
 ```bash
@@ -98,7 +98,7 @@ npm run dev
 ```
 Then, open http://localhost:3000 to access the client.
 
-### 🚀 Production for the Frontend
+## 🚀 Production for the Frontend
 To run the client in production mode, first build the Next.js code by running:
 
 ```bash
@@ -114,7 +114,7 @@ npm start
 
 This will start the client and make it available at http://localhost:3000.
 
-### 🏗️ Scripts for the Frontend
+## 🏗️ Scripts for the Frontend
 This project comes with several predefined scripts in the package.json file:
 
 `dev:` Starts the development server.
@@ -124,3 +124,29 @@ This project comes with several predefined scripts in the package.json file:
 `start:` Starts the application in production mode.
 
 `lint:` Runs ESLint to check code quality.
+
+## 🌍 Environment Variables
+The application uses environment variables for configuration. You can find a template for these variables in the .env-template file in the root directory of both the server and client.
+### Server .env-template
+**PORT:** The port number where the server will run.
+
+**NODE_ENV:** The current environment (development, production, etc.).
+
+**SECRET:** The secret key used for JWT authentication.
+
+**FRONT_URL:** The URL of the frontend application.
+
+**DATABASE_NAME:** The name of the database for the application.
+
+**DATABASE_NAME_TEST:** The name of the database for testing.
+
+**MYSQL_HOST:** The host of the MySQL database.
+
+**MYSQL_USER:** The user for the MySQL database.
+
+**MYSQL_PASSWORD:** The password for the MySQL database user.
+
+### **Client .env-template**
+
+**NEXTAUTH_SECRET:** The secret key used for NextAuth.
+**BACKEND_URL:** The URL of the backend server.
