@@ -35,6 +35,7 @@ const AuthForm = () => {
 
     const {
         register,
+        watch,
         handleSubmit,
         formState: {
             errors
@@ -43,8 +44,9 @@ const AuthForm = () => {
         defaultValues: {
             name: "",
             email: "",
-            password: ""
-        }
+            password: "",
+            passwordRepeat: "", 
+        } 
     })  
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsLoading(true);
@@ -105,6 +107,7 @@ const AuthForm = () => {
                         register={register}
                         errors={errors}
                         disabled= {isLoading}
+                        placeholder="Username"
                         ></Input>
                     )}
                     <Input 
@@ -114,6 +117,7 @@ const AuthForm = () => {
                     register={register}
                     errors={errors}
                     disabled= {isLoading}
+                    placeholder="youremail@yourdomain.com"
                     ></Input>
                     <Input 
                     id="password" 
@@ -122,7 +126,25 @@ const AuthForm = () => {
                     register={register}
                     errors={errors}
                     disabled= {isLoading}
+                    placeholder="******"
+                    required={true}
                     ></Input>
+                    {variant === "REGISTER" && (
+                        <Input 
+                        id="repeatPassword" 
+                        label="Repeat password"
+                        type= "password"
+                        register={register}
+                        validate={(val) => {
+                            return (watch('password') === val) ||
+                            "Your passwords do no match";
+                            }}
+                        errors={errors}
+                        disabled= {isLoading}
+                        placeholder="******"
+                        ></Input>
+                        
+                    )}
                     <div>
                         <Button
                             disabled={isLoading}
@@ -143,13 +165,13 @@ const AuthForm = () => {
                                 items-center
                             "
                         >
-                            <div className="
+                            {/* <div className="
                                 w-full
                                 border-t
                                 border-gray-300"
-                            />
+                            /> */}
                         </div>
-                        <div className="
+                        {/* <div className="
                             relative 
                             flex 
                             justify-center 
@@ -163,10 +185,10 @@ const AuthForm = () => {
                             text-gray-500">
                                 Or continue with
                             </span>
-                        </div>
+                        </div> */}
                     </div>
 
-                        <div className="mt-6 flex gap-2">
+                        {/* <div className="mt-6 flex gap-2">
                             <AuthSocialButton
                                 icon={BsGithub}
                                 onClick={() => socialAction("github")}
@@ -175,7 +197,7 @@ const AuthForm = () => {
                                 icon={BsGoogle}
                                 onClick={() => socialAction("google")}
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="
