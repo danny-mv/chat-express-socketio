@@ -26,7 +26,7 @@ const Form = () => {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         console.log(data);
         setValue("message", "", {shouldValidate: true})
-        axios.post("http://localhost:8000/messages", {
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/messages`, {
             ...data,
             conversationId
         }, {headers:{"Authorization": `Bearer ${session.data?.user.accessToken}`}})

@@ -51,9 +51,9 @@ const AuthForm = () => {
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
         setIsLoading(true);
         if (variant === "REGISTER") {
-            axios.post("http://localhost:8000/register", data)
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/register`, data)
             .then(() => signIn("credentials", data))
-            .catch(() => toast.error("Something went wrong"))
+            .catch((error) => toast.error(`Something went wrong`))
             .finally(() => setIsLoading(false)) 
         }
         if(variant === "LOGIN"){

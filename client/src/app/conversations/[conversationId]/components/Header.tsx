@@ -78,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({conversation}) => {
                 "
             />
         </div>
-     );
+    );
 }
- 
+
 export default Header;

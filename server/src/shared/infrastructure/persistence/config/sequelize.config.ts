@@ -26,7 +26,6 @@ function defineModels(sequelize: Sequelize) {
 		updatedAt: false,
 	});
 
-	// Retornando los modelos para su uso posterior
 	return { User, Conversation, Message };
 }
 export const { User, Conversation, Message } = defineModels(sequelize);

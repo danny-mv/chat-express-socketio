@@ -29,7 +29,7 @@ const getConversations = async ():Promise<Conversation[]> => {
         return [];
     }
     try {
-        const response = await fetch("http://localhost:8000/conversations", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/conversations`, {
                     method: "GET",
                     headers: {
                     authorization: `Bearer ${session.user.accessToken}`,

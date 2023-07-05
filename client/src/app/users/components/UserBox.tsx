@@ -22,7 +22,7 @@ const UserBox: React.FC<UserBoxProps> = ({data}) => {
 
     const handleClick = useCallback(() => {
         setIsLoading(true);
-        axios.post("http://localhost:8000/conversation", {
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/conversation`, {
             userId: data.id,
             name: data.name
         },{headers:{"Authorization": `Bearer ${session.data?.user.accessToken}`}})

@@ -15,7 +15,7 @@ export class Server {
 	private httpServer?: http.Server;
 	private io?: SocketIoServer;
 
-	constructor(private readonly port: string) {
+	constructor(private readonly port: string, private readonly frontUrl: string) {
 		this.express = express();
 		this.express.use(helmet());
 		this.express.use(cors());
@@ -80,8 +80,10 @@ export class Server {
 	}
 
 	private initializeSocketIo(): void {
-		this.httpServer = http.createServer(this.express); // Aquí se crea el servidor HTTP
-		this.io = new SocketIoServer(this.httpServer, { cors: { origin: "http://localhost:3000" } }); // Aquí se crea el servidor Socket.IO
+		this.httpServer = http.createServer(this.express);
+		this.io = new SocketIoServer(this.httpServer, {
+			cors: { origin: this.frontUrl },
+		});
 		this.configureSocketEvents();
 	}
 

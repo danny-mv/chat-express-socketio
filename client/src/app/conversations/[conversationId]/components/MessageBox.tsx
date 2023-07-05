@@ -15,7 +15,6 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     data,
     isLast
 }) => {
-    console.log(data);
     const { data: session, status } = useSession();
 
     if(status !== "authenticated") {

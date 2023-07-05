@@ -6,14 +6,12 @@ export interface User {
 }
 const getUsers = async ():Promise<User[]> => {
     const session = await getSession();
-    console.log(session);
 
     if(!session?.user?.email){
-        console.log("error");
         return [];
     }
     try {
-        const response = await fetch("http://localhost:8000/list", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/list`, {
                     method: "GET",
                     headers: {
                     authorization: `Bearer ${session.user.accessToken}`,
@@ -23,9 +21,7 @@ const getUsers = async ():Promise<User[]> => {
                         return []
                     }
         const jsonResponse = await response.json()
-        console.log(jsonResponse);
         const data = jsonResponse.data as User[];
-        console.log(data);
         return data;
     } catch (error: any) {
         console.log(error);

@@ -106,7 +106,6 @@ export class SequelizeConversationRepository
 				type: QueryTypes.SELECT,
 			}
 		);
-		console.log({ result });
 		const conversations = result as { id: string; name: string }[];
 
 		return conversations.map(({ id, name }) => Conversation.fromPrimitives({ id, name }));

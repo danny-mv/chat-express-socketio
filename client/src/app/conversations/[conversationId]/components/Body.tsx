@@ -24,7 +24,6 @@ const Body: React.FC<BodyProps> = ({
 
         const messageHandler = (message: Message) => {
             setMessages((current) => {
-                console.log("current",current);
                 if(find(current, {id: message.id})){
                     return current
                 }
