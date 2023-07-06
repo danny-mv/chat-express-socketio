@@ -49,8 +49,6 @@ const getConversations = async ():Promise<Conversation[]> => {
             })),
         }));
 
-        console.log(transformedData);
-
         return transformedData;
     } catch (error:any) {
         return []        

@@ -146,7 +146,8 @@ The application uses environment variables for configuration. You can find a tem
 
 **MYSQL_PASSWORD:** The password for the MySQL database user.
 
-### **Client .env-template**
+### Client .env-template
 
 **NEXTAUTH_SECRET:** The secret key used for NextAuth.
-**BACKEND_URL:** The URL of the backend server.
+
+**NEXT_PUBLIC_API_URL:** The URL of the backend server.
