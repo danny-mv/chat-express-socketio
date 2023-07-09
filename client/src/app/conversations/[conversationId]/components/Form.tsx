@@ -6,6 +6,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import MessageInput from "./MessageInput";
 import { HiPaperAirplane } from "react-icons/hi2";
 import { useSession } from "next-auth/react";
+import { socket } from "@/app/lib/socketio";
 
 const Form = () => {
     const { conversationId } = useConversation();
@@ -24,12 +25,17 @@ const Form = () => {
     });
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        console.log(data);
         setValue("message", "", {shouldValidate: true})
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/messages`, {
+        /* axios.post(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/messages`, {
             ...data,
             conversationId
-        }, {headers:{"Authorization": `Bearer ${session.data?.user.accessToken}`}})
+        }, {headers:{"Authorization": `Bearer ${session.data?.user.accessToken}`}}) */
+        socket.emit('message:create', {
+            ...data,
+            conversationId,
+            sender: session.data?.user.id, 
+        });
+        
     }
 
     return (
