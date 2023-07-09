@@ -24,8 +24,7 @@ function socketEventsHandler(socket: Socket, io: SocketIoServer) {
 					sender,
 					conversationId,
 				});
-				socket.to(conversationId).emit("messages:new", newMessage.getData());
-				console.log("nuevo mensaje", newMessage);
+				io.to(conversationId).emit("messages:new", newMessage.getData());
 			} catch (error) {
 				console.error(error);
 			}
