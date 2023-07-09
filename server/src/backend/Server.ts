@@ -3,17 +3,18 @@ import cors from "cors";
 import express, { Request, Response, Router } from "express";
 import helmet from "helmet";
 import * as http from "http";
-import { Server as SocketIoServer, Socket } from "socket.io";
+import { Server as SocketIoServer } from "socket.io";
 import swaggerUi from "swagger-ui-express";
 
 import swaggerSetup from "../docs/swagger";
 import { HttpResponse } from "../shared/infrastructure/response/HttpResponse";
+import socketManager from "./controllers/socketManager";
 import { registerRoutes } from "./routes";
 
 export class Server {
 	private readonly express: express.Express;
 	private httpServer?: http.Server;
-	private io?: SocketIoServer;
+	private readonly io?: SocketIoServer;
 
 	constructor(private readonly port: string, private readonly frontUrl: string) {
 		this.express = express();
@@ -81,13 +82,10 @@ export class Server {
 
 	private initializeSocketIo(): void {
 		this.httpServer = http.createServer(this.express);
-		this.io = new SocketIoServer(this.httpServer, {
-			cors: { origin: this.frontUrl },
-		});
-		this.configureSocketEvents();
+		socketManager(this.httpServer, this.frontUrl);
 	}
 
-	private configureSocketEvents(): void {
+	/* private configureSocketEvents(): void {
 		if (!this.io) {
 			console.error("Error: Socket.io server is not initialized.");
 
@@ -108,5 +106,5 @@ export class Server {
 				console.log("user disconnected");
 			});
 		});
-	}
+	} */
 }
