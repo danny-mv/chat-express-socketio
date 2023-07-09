@@ -24,6 +24,7 @@ const Input: React.FC<InputProps> = ({
     placeholder,
     validate
 }) => {
+    let inputProps = register ? register(id, { required, validate }) : {};
     return (
         <div>
             <label
@@ -45,7 +46,7 @@ const Input: React.FC<InputProps> = ({
                 autoComplete={id}
                 disabled={disabled}
                 placeholder={placeholder}
-                {...register(id, { required, validate })}
+                {...inputProps}
                 className={clsx(`
                     form-input
                     block
