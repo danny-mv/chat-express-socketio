@@ -23,7 +23,7 @@ const Body: React.FC<BodyProps> = ({
         bottomRef?.current?.scrollIntoView();
 
         const messageHandler = (message: Message) => {
-            console.log("reccibido");
+            console.log("recibido", {message});
             setMessages((current) => {
                 if(find(current, {id: message.id})){
                     return current
