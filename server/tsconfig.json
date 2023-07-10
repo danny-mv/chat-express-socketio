@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "noEmitOnError": false,
     "removeComments": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
     "src/**/*.ts"
