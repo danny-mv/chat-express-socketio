@@ -20,8 +20,7 @@ const options = {
 	pool: {
 		max: 5,
 		min: 0,
-		acquire: 30000, // Increase this value
-		idle: 10000,
+		idle: 1,
 	},
 	logging: process.env.NODE_ENV === "dev" ? console.log : noop,
 };
