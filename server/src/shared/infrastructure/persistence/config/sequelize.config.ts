@@ -28,11 +28,11 @@ const options = {
 };
 export const sequelize = new Sequelize(database, username, password, options);
 function defineModels(sequelize: Sequelize) {
-	const User = sequelize.define("User", UserInstance, { timestamps: false });
-	const Conversation = sequelize.define("Conversation", ConversationInstance, {
+	const User = sequelize.define("user", UserInstance, { timestamps: false });
+	const Conversation = sequelize.define("conversation", ConversationInstance, {
 		timestamps: false,
 	});
-	const Message = sequelize.define("Message", MessageInstance, {
+	const Message = sequelize.define("message", MessageInstance, {
 		timestamps: true,
 		updatedAt: false,
 	});
@@ -41,8 +41,8 @@ function defineModels(sequelize: Sequelize) {
 }
 export const { User, Conversation, Message } = defineModels(sequelize);
 function defineRelations() {
-	User.belongsToMany(Conversation, { through: "Users_Conversations", timestamps: false });
-	Conversation.belongsToMany(User, { through: "Users_Conversations", timestamps: false });
+	User.belongsToMany(Conversation, { through: "users_conversations", timestamps: false });
+	Conversation.belongsToMany(User, { through: "users_conversations", timestamps: false });
 	Message.belongsTo(User);
 	User.hasMany(Message);
 	Message.belongsTo(Conversation);
