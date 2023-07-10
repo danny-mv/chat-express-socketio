@@ -14,7 +14,17 @@ export const logBuffer: string[] = [];
 const dialect: Dialect = "mysql";
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = function () {};
-const options = { dialect, host, logging: process.env.NODE_ENV === "dev" ? console.log : noop };
+const options = {
+	dialect,
+	host,
+	pool: {
+		max: 5,
+		min: 0,
+		acquire: 30000, // Increase this value
+		idle: 10000,
+	},
+	logging: process.env.NODE_ENV === "dev" ? console.log : noop,
+};
 export const sequelize = new Sequelize(database, username, password, options);
 function defineModels(sequelize: Sequelize) {
 	const User = sequelize.define("User", UserInstance, { timestamps: false });
