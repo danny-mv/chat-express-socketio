@@ -10,6 +10,7 @@ const username = process.env.MYSQL_USER ?? "";
 const password = process.env.MYSQL_PASSWORD ?? "";
 const database = process.env.DATABASE_NAME ?? "";
 const host = process.env.MYSQL_HOST ?? "localhost";
+const port = parseInt(process.env.MYSQL_PORT ?? "", 10) || 3306;
 export const logBuffer: string[] = [];
 const dialect: Dialect = "mysql";
 // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -17,6 +18,7 @@ const noop = function () {};
 const options = {
 	dialect,
 	host,
+	port,
 	pool: {
 		max: 5,
 		min: 0,
