@@ -9,11 +9,12 @@ import { UserInstance } from "../../../../Users/infrastructure/persistences/sequ
 const username = process.env.MYSQL_USER ?? "";
 const password = process.env.MYSQL_PASSWORD ?? "";
 const database = process.env.DATABASE_NAME ?? "";
+const host = process.env.MYSQL_HOST ?? "localhost";
 export const logBuffer: string[] = [];
 const dialect: Dialect = "mysql";
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = function () {};
-const options = { dialect, logging: process.env.NODE_ENV === "dev" ? console.log : noop };
+const options = { dialect, host, logging: process.env.NODE_ENV === "dev" ? console.log : noop };
 export const sequelize = new Sequelize(database, username, password, options);
 function defineModels(sequelize: Sequelize) {
 	const User = sequelize.define("User", UserInstance, { timestamps: false });
