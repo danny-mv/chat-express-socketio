@@ -7,8 +7,8 @@ export class SequelizeMessageRepository extends SequelizeRepository implements M
 		await this.models[0].create({
 			id: message.id.value,
 			body: message.body.value,
-			UserId: message.UserId.value,
-			ConversationId: message.ConversationId.value,
+			userId: message.UserId.value,
+			conversationId: message.ConversationId.value,
 		});
 		const data = await this.models[0].findOne({
 			where: { id: message.id.value },
@@ -22,14 +22,14 @@ export class SequelizeMessageRepository extends SequelizeRepository implements M
 		if (!data) {
 			throw new Error("Could not save");
 		}
-		const { id, body, UserId, ConversationId, User, createdAt } = data.dataValues;
-		const user = User.dataValues;
+		const { id, body, userId, conversationId, createdAt } = data.dataValues;
+		const user = data.dataValues.user.dataValues;
 
 		return Message.fromPrimitives({
 			id,
 			body,
-			UserId,
-			ConversationId,
+			UserId: userId,
+			ConversationId: conversationId,
 			user,
 			createdAt,
 		});

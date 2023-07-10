@@ -18,8 +18,8 @@ export class Conversation {
 		messages?: {
 			id: string;
 			body: string;
-			UserId: string;
-			ConversationId: string;
+			userId: string;
+			conversationId: string;
 			createdAt: string;
 		}[];
 	}): Conversation {
@@ -43,7 +43,7 @@ export class Conversation {
 						Message.fromPrimitives({
 							id: message.id,
 							body: message.body,
-							UserId: message.UserId,
+							UserId: message.userId,
 							ConversationId: plainData.id,
 							createdAt: message.createdAt,
 							seenIds: [],
