@@ -82,9 +82,9 @@ export class SequelizeConversationRepository
 		});
 
 		return userConversations.map((conversationData) => {
-			const { id, name, Users, Messages } = conversationData.dataValues;
+			const { id, name, users, messages } = conversationData.dataValues;
 
-			return Conversation.fromPrimitives({ id, name, users: Users, messages: Messages });
+			return Conversation.fromPrimitives({ id, name, users, messages });
 		});
 	}
 
