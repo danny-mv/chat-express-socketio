@@ -84,27 +84,4 @@ export class Server {
 		this.httpServer = http.createServer(this.express);
 		socketManager(this.httpServer, this.frontUrl);
 	}
-
-	/* private configureSocketEvents(): void {
-		if (!this.io) {
-			console.error("Error: Socket.io server is not initialized.");
-
-			return;
-		}
-
-		this.io.on("connection", (socket: Socket) => {
-			console.log("a user connected");
-			socket.on("join", (conversationId: string) => {
-				socket.join(conversationId);
-			});
-			socket.on("messages:new", (message: { id: string; body: string; ConversationId: string }) => {
-				this.io!.to(message.ConversationId).emit("messages:new", message);
-				console.log("nuevo mensaje", message);
-			});
-
-			socket.on("disconnect", () => {
-				console.log("user disconnected");
-			});
-		});
-	} */
 }

@@ -1,11 +1,11 @@
-import dotenv from "dotenv";
+import "dotenv/config";
+
 import { Dialect, Sequelize } from "sequelize";
 
 import { ConversationInstance } from "../../../../Conversations/infrastructure/ConversationInstance";
 import { MessageInstance } from "../../../../Messages/infrastructure/MessageInstance";
 import { UserInstance } from "../../../../Users/infrastructure/persistences/sequelize/UserInstance";
 
-dotenv.config();
 const username = process.env.MYSQL_USER ?? "";
 const password = process.env.MYSQL_PASSWORD ?? "";
 const database = process.env.DATABASE_NAME ?? "";
