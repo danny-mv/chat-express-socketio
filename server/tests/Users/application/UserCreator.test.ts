@@ -122,7 +122,10 @@ describe("UserCreator", () => {
 
 		const userCreationCall = repository.create.mock.calls[0];
 		const createdUser = userCreationCall[0];
-		const hashedPassword = hashSyncSpy.mock.results[0].value; // Access the result of the spy directly
+		if (!createdUser.password) {
+			throw new Error("Password not defined for user");
+		}
+		const hashedPassword = hashSyncSpy.mock.results[0].value; 
 
 		expect(createdUser.password.value).toBe(hashedPassword);
 	});

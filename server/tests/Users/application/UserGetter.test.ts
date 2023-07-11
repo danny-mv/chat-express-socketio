@@ -33,7 +33,11 @@ describe("UserGetter", () => {
 		);
 
 		repository.findByEmail.mockResolvedValue(user);
-		user.password.compare = jest.fn().mockResolvedValue(true);
+		if (user.password) {
+			user.password.compare = jest.fn().mockResolvedValue(true);
+		} else {
+			throw new Error("Password not defined for user");
+		}
 
 		const expectedResponse = {
 			id: user.id.value,
@@ -73,7 +77,11 @@ describe("UserGetter", () => {
 		);
 
 		repository.findByEmail.mockResolvedValue(user);
-		user.password.compare = jest.fn().mockResolvedValue(false);
+		if (user.password) {
+			user.password.compare = jest.fn().mockResolvedValue(false);
+		} else {
+			throw new Error("Password not defined for user");
+		}
 
 		await expect(userGetter.run(request)).rejects.toThrow("Invalid Credentials");
 		expect(repository.findByEmail).toHaveBeenCalledWith(new UserEmail(request.email));
