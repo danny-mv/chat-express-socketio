@@ -10,7 +10,7 @@ export class User {
 		readonly id: UserId,
 		readonly name: UserName,
 		readonly email: UserEmail,
-		readonly password: UserPassword,
+		readonly password?: UserPassword,
 		readonly conversationIds?: ConversationId[],
 		readonly messageIds?: MessageId[]
 	) {}
@@ -19,7 +19,7 @@ export class User {
 		id: string;
 		name: string;
 		email: string;
-		password: string;
+		password?: string;
 		conversationIds?: string[];
 		messageIds?: string[];
 	}): User {
@@ -27,7 +27,7 @@ export class User {
 			new UserId(plainData.id),
 			new UserName(plainData.name),
 			new UserEmail(plainData.email),
-			new UserPassword(plainData.password, true),
+			plainData.password ? new UserPassword(plainData.password, true) : undefined,
 			plainData.conversationIds
 				? plainData.conversationIds.map((conversationId) => new ConversationId(conversationId))
 				: [],
@@ -40,7 +40,7 @@ export class User {
 			id: this.id.value,
 			name: this.name.value,
 			email: this.email.value,
-			password: this.password.value,
+			password: this.password ? this.password.value : undefined,
 			conversationIds: this.conversationIds
 				? this.conversationIds.map((conversationId) => conversationId.value)
 				: [],
