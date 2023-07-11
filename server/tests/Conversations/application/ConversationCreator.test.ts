@@ -10,7 +10,12 @@ import { ConversationName } from "../../../src/Conversations/domain/Conversation
 import { ConversationRepository } from "../../../src/Conversations/domain/ConversationRepository";
 import { UserId } from "../../../src/Users/domain/UserId";
 
-jest.mock("uuid");
+jest.mock('uuid', () => {
+    return {
+        v4: jest.fn(() => "uuid"),
+    }
+});
+
 describe("ConversationCreator", () => {
 	let repository: MockProxy<ConversationRepository>;
 	let conversationCreator: ConversationCreator;
@@ -21,7 +26,7 @@ describe("ConversationCreator", () => {
 	});
 
 	it("should create a conversation correctly", async () => {
-		// Arrange
+		
 		const request: ConversationCreatorRequest = {
 			userIds: ["1", "2", "3"],
 			conversationName: "Test Conversation",
@@ -36,15 +41,15 @@ describe("ConversationCreator", () => {
 			name: conversationName.value,
 		};
 
-		(uuidv4 as jest.Mock).mockReturnValue(conversationId.value);
+		(uuidv4 as jest.Mock).mockReturnValue("uuid");
 
 		const conversation = new Conversation(conversationId, conversationName, userIds);
 		repository.create.mockResolvedValue(conversation);
 
-		// Act
+		
 		const response = await conversationCreator.run(request);
 
-		// Assert
+		
 		expect(response).toEqual(expectedResponse);
 		// eslint-disable-next-line @typescript-eslint/unbound-method
 		expect(repository.create).toHaveBeenCalledWith(conversation);

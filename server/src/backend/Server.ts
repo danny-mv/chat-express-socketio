@@ -27,12 +27,12 @@ export class Server {
 		const router = Router();
 		this.express.use(router);
 		registerRoutes(router, this.io);
-		router.use((err: Error, req: Request, res: Response, _next: () => void) => {
+		router.use((err: Error, _req: Request, res: Response, _next: () => void) => {
 			// eslint-disable-next-line no-console
 			console.log(err);
 			new HttpResponse().Error(res, "Contact to an admin");
 		});
-		this.express.use((err: Error, req: Request, res: Response, _next: () => void) => {
+		this.express.use((err: Error, _req: Request, res: Response, _next: () => void) => {
 			// eslint-disable-next-line no-console
 			console.log(err);
 			new HttpResponse().Error(res, "Server error");

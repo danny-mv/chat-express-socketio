@@ -56,3 +56,4 @@ export const register = (router: Router): void => {
 		async (req: Request, res: Response) => await userCtrl.run(req, res)
 	);
 };
+//TODO trpc zod
