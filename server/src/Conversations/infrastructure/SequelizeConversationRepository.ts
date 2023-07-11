@@ -19,13 +19,13 @@ export class SequelizeConversationRepository
 	implements ConversationRepository
 {
 	async create(conversation: Conversation): Promise<Conversation> {
-		if (!conversation.users) {
+		if (!conversation.usersIds) {
 			throw new Error("There are not users");
 		}
-		const userIds = conversation.users.map((user) => user.id.value);
+		const userIds = conversation.usersIds.map((user) => user.value);
 		const existingConversation = await this.findConversationsBetweenTwoUsers(
-			conversation.users[0].id,
-			conversation.users[1].id
+			conversation.usersIds[0],
+			conversation.usersIds[1]
 		);
 		if (existingConversation.length > 0) {
 			return existingConversation[0];
@@ -35,7 +35,7 @@ export class SequelizeConversationRepository
 			name: conversation.name.value,
 		})) as ConversationModel;
 		const users = await this.models[1].findAll({
-			where: { id: conversation.users.map((user) => user.id.value) },
+			where: { id: conversation.usersIds },
 		});
 		if (users.length < 2 || users.length === 0) {
 			throw new Error("Invalid users length");

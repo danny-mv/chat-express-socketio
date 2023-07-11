@@ -9,6 +9,8 @@ import { UserInstance } from "../../../../Users/infrastructure/persistences/sequ
 const username = process.env.MYSQL_USER ?? "";
 const password = process.env.MYSQL_PASSWORD ?? "";
 const database = process.env.DATABASE_NAME ?? "";
+const testDatabase = process.env.DATABASE_NAME_TEST ?? "";
+const db = process.env.NODE_ENV === "test" ? testDatabase : database;
 const host = process.env.MYSQL_HOST ?? "localhost";
 const port = parseInt(process.env.MYSQL_PORT ?? "", 10) || 3306;
 export const logBuffer: string[] = [];
@@ -26,7 +28,7 @@ const options = {
 	},
 	logging: process.env.NODE_ENV === "dev" ? console.log : noop,
 };
-export const sequelize = new Sequelize(database, username, password, options);
+export const sequelize = new Sequelize(db, username, password, options);
 function defineModels(sequelize: Sequelize) {
 	const User = sequelize.define("user", UserInstance, { timestamps: false });
 	const Conversation = sequelize.define("conversation", ConversationInstance, {

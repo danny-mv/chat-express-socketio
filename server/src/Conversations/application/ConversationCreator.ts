@@ -1,4 +1,4 @@
-import { User } from "../../Users/domain/User";
+import { UserId } from "../../Users/domain/UserId";
 import { Conversation } from "../domain/Conversation";
 import { ConversationId } from "../domain/ConversationId";
 import { ConversationName } from "../domain/ConversationName";
@@ -15,17 +15,7 @@ export class ConversationCreator {
 		const conversation = new Conversation(
 			new ConversationId(),
 			new ConversationName(conversationName),
-			userIds.map((id) =>
-				User.fromPrimitives({
-					id,
-					name: "",
-					email: "",
-					password: "",
-					conversationIds: [],
-					messageIds: [],
-				})
-			),
-			[]
+			userIds.map((userId) => new UserId(userId))
 		);
 
 		const conversationPersistence = await this.conversationRepository.create(conversation);
