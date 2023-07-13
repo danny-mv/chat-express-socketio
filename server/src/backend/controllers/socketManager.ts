@@ -3,11 +3,19 @@ import { Server as SocketIoServer, Socket } from "socket.io";
 
 import { MessageCreator } from "../../Messages/application/MessageCreator";
 import { SequelizeMessageRepository } from "../../Messages/infrastructure/SequelizeMessageRepository";
-import { Message, User } from "../../shared/infrastructure/persistence/config/sequelize.config";
+import {
+	Conversation,
+	Message,
+	User
+} from "../../shared/infrastructure/persistence/config/sequelize.config";
+import { ConversationCreator } from "../../Conversations/application/ConversationCreator";
+import { SequelizeConversationRepository } from "../../Conversations/infrastructure/SequelizeConversationRepository";
 
 function socketEventsHandler(socket: Socket, io: SocketIoServer) {
 	const messageSequelize = new SequelizeMessageRepository(Message, User);
+	const conversationSequelize = new SequelizeConversationRepository(Conversation, User);
 	const messageCreator = new MessageCreator(messageSequelize);
+	const conversationCreator = new ConversationCreator(conversationSequelize);
 	console.log("a user connected");
 
 	socket.on("join", (conversationId: string) => {
@@ -22,7 +30,7 @@ function socketEventsHandler(socket: Socket, io: SocketIoServer) {
 				const newMessage = await messageCreator.run({
 					body: message,
 					sender,
-					conversationId,
+					conversationId
 				});
 				io.to(conversationId).emit("messages:new", newMessage.getData());
 			} catch (error) {
@@ -31,6 +39,20 @@ function socketEventsHandler(socket: Socket, io: SocketIoServer) {
 		}
 	);
 
+	socket.on("conversation:create", async (body: { userId: string; name: string }) => {
+		try {
+			const { userId, name } = body;
+			const userIds = [userId];
+			const data = await conversationCreator.run({
+				userIds,
+				conversationName: name
+			});
+			io.to(userId).emit("conversation:update", data);
+		} catch (err) {
+			console.error(err);
+		}
+	});
+
 	socket.on("disconnect", () => {
 		console.log("user disconnected");
 	});
@@ -38,7 +60,7 @@ function socketEventsHandler(socket: Socket, io: SocketIoServer) {
 
 export default function socketManager(httpServer: HttpServer, frontUrl: string): SocketIoServer {
 	const io = new SocketIoServer(httpServer, {
-		cors: { origin: frontUrl },
+		cors: { origin: frontUrl }
 	});
 
 	io.on("connection", (socket: Socket) => {
