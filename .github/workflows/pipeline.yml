@@ -15,10 +15,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-      - 
-        name: Select server
-        run: cd server/
       - name: Install dependencies
-        run: npm ci
+        run: cd server& npm ci
       - name: Lint
         run: npm run lint
