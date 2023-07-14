@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths: 
+      - "server/**"
 
 jobs:
   build:
@@ -21,3 +23,6 @@ jobs:
       - name: Lint
         run: npm run lint
         working-directory: server 
+      - name: Lint fix
+        run: npm run lint:fix
+        working-directory: server
