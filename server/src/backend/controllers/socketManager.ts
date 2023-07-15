@@ -1,4 +1,5 @@
 import { Server as HttpServer } from "http";
+import { JwtPayload, verify } from "jsonwebtoken";
 import { Server as SocketIoServer, Socket } from "socket.io";
 
 import { ConversationCreator } from "../../Conversations/application/ConversationCreator";
@@ -11,6 +12,13 @@ import {
 	User,
 } from "../../shared/infrastructure/persistence/config/sequelize.config";
 
+declare module "socket.io" {
+	export interface Socket {
+		userData: {
+			id: string;
+		};
+	}
+}
 function socketEventsHandler(socket: Socket, io: SocketIoServer) {
 	const messageSequelize = new SequelizeMessageRepository(Message, User);
 	const conversationSequelize = new SequelizeConversationRepository(Conversation, User);
@@ -62,7 +70,23 @@ export default function socketManager(httpServer: HttpServer, frontUrl: string):
 	const io = new SocketIoServer(httpServer, {
 		cors: { origin: frontUrl },
 	});
+	io.use((socket, next) => {
+		const token = socket.handshake.auth.token as string;
 
+		if (token) {
+			verify(token, process.env.SECRET ?? "", (err, decoded) => {
+				if (err) {
+					next(new Error("Authentication Error"));
+				} else {
+					const { id } = decoded as JwtPayload;
+					socket.userData = { id };
+					next();
+				}
+			});
+		} else {
+			next(new Error("Authentication Error"));
+		}
+	});
 	io.on("connection", (socket: Socket) => {
 		socketEventsHandler(socket, io);
 	});
