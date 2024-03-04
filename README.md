@@ -19,7 +19,7 @@ The API supports the following operations:
 
 - **List users:** The API allows to list all the registered users.
 
-The API follows the main design patterns and respects a clean architecture structure. The persistence is achieved through MongoDB database using Sequelize as an ORM.
+The API follows the main design patterns and respects a clean architecture structure. The persistence is achieved through Mysql database using Sequelize as an ORM.
 
 ## 📑 Available Endpoints
 Please refer to the /documentation directory to view the full specification of the available endpoints.
