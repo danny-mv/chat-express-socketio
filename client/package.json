@@ -18,7 +18,7 @@
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
     "eslint": "8.42.0",
-    "eslint-config-next": "13.4.5",
+    "eslint-config-next": "13.5.7",
     "lodash": "^4.17.21",
     "next": "^13.4.7",
     "next-auth": "^4.22.1",
